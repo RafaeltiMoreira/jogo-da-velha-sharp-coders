@@ -7,8 +7,6 @@ namespace JogoDaVelha {
             int placar = 0;
             int vencedorX;
             int vencedorO;
-            //char vencedorXText;
-            //char vencedorOText;
             bool continuar;
             int jogadorAtual = -1;
 
@@ -37,9 +35,10 @@ namespace JogoDaVelha {
 
 
                 if (placar.Equals(1)) {
-
+                    string opJogador;
+                    opJogador = jogadorAtual == 1 ? "X" : "O";
                     Console.WriteLine($@"
-        Jogador {jogadorAtual} é o vencedor!");
+        Jogador (a) {opJogador} é o vencedor (a)!");
                 }
 
                 if (placar.Equals(2)) {
@@ -54,6 +53,8 @@ namespace JogoDaVelha {
                 if (repeteGame == "N" || repeteGame == "n") {
                     continuar = false;
                     Console.Clear();
+                    Console.WriteLine(@"
+        ===> Pressione qualquer tecla para fechar. <===");
                 }
                 else {
                     continuar = true;
@@ -126,6 +127,8 @@ namespace JogoDaVelha {
             bool mover = true;
 
             do {
+                Console.Write(@"
+        Selecione de 1 a 9 no tabuleiro de jogo: ");
                 string opcaoUsuario = Console.ReadLine();
 
                 if (!string.IsNullOrEmpty(opcaoUsuario) &&
@@ -170,14 +173,15 @@ namespace JogoDaVelha {
         }
 
         static void ExibirInitial(int NumeroJogador) {
-
+            string opJogador;
+            opJogador = NumeroJogador == 1 ? "X" : "O";
             Console.WriteLine($@"
         Sejam bem-vindos (as) ao Jogo da Velha!
             
-        Jogador (a) 1: X
-        Jogador (a) 2: O
+        Jogador (a): X
+        Jogador (a): O
 
-        Jogador (a) {NumeroJogador}, selecione de 1 a 9 no tabuleiro de jogo.
+        Tabuleiro disponível para jogador (a): {opJogador}.
             
             ");
         }
@@ -208,16 +212,6 @@ namespace JogoDaVelha {
                 vencedorX++;
             }
         }
-
-        //static int JogadorVencedor(int jogador, int vencedorO, int vencedorX, int vencedorOText, int vencedorXText) {
-        //    if (jogador.Equals(1)) {
-        //        vencedorO++;
-        //        vencedorOText = vencedorO.ToString();
-        //    }
-        //    else {
-        //        vencedorX++;
-        //    }
-        //}
     }
 }
 
