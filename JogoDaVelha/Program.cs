@@ -32,7 +32,7 @@ namespace JogoDaVelha {
                     placar = VerificarVencedor(posicaoTabuleiro);
 
                 } while (placar == 0);
-
+                
                 Console.Clear();
                 ExibirInitial(jogadorVencedor);
                 ExibirTabuleiro(posicaoTabuleiro);
@@ -42,28 +42,34 @@ namespace JogoDaVelha {
                 if (placar == vencedorX) {
                     jogadorX++;
                     Console.WriteLine($@"
-        Jogador (a) {exibirAtual} é o vencedor (a)!");
+        Jogador (a) ==> {exibirAtual} (Xis) <== é o vencedor (a)!");
                 }
                 else if (placar == vencedorO) {
                     jogadorO++;
                     Console.WriteLine($@"
-        Jogador (a) {exibirAtual} é o vencedor (a)!"); 
+        Jogador (a) ==> {exibirAtual} (Bola) <== é o vencedor (a)!");
                 }
                 else {
                     jogadorE++;
                     Console.WriteLine(@"
-        O jogo terminou empatado."); 
+        O jogo terminou EMPATADO.");
                 }
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine();
                 Console.Write($@"
         === Placar ===
+                ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine($@"
+        Jogador (a) X: {jogadorX} 
                 
-        Jogador(a) X: {jogadorX}
-        Jogador(a) O: {jogadorO}
-        Empate: {jogadorE}
-        
+        Jogador (a) O: {jogadorO} 
+                
+        Empate: {jogadorE} ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(@"
         Deseja continuar jogando? (S/N): ");
+
                 var repeteGame = Console.ReadLine();
                 if (repeteGame == "N" || repeteGame == "n") {
                     continuar = false;
@@ -77,6 +83,48 @@ namespace JogoDaVelha {
                     Console.Clear();
                 }
             }
+        }
+
+        private static int ProximoJogador(int jogadorVencedor) {
+            // Adicionado condição para verificar se jogadorVencedor é -1
+            if (jogadorVencedor == -1) {
+                return 1;
+            }
+            else {
+                return jogadorVencedor == 1 ? 2 : 1;
+            }
+        }
+
+        private static void ExecutarJogada(char[] posicaoTabuleiro, int jogadorVencedor) {
+
+            bool jogadaValida = false;
+            while (!jogadaValida) {
+                Console.Write(@"
+        Digite uma posição de 1 a 9 do tabuleiro para jogar: ");
+                var posicao = Console.ReadLine();
+
+                if (!int.TryParse(posicao, out int posicaoInt)) {
+                    Console.WriteLine(@"
+        Jogada não válida! Por favor, escolha um número de 1 a 9.");
+                    continue;
+                }
+
+                if (posicaoInt < 1 || posicaoInt > 9) {
+                    Console.WriteLine(@"
+        Jogada não válida! Por favor, escolha um número de 1 a 9.");
+                    continue;
+                }
+
+                if (posicaoTabuleiro[posicaoInt - 1] == 'X' || posicaoTabuleiro[posicaoInt - 1] == 'O') {
+                    Console.WriteLine(@"
+        Essa posição já está ocupada, Por favor, escolha um número disponível de 1 a 9.");
+                    continue;
+                }
+
+                posicaoTabuleiro[posicaoInt - 1] = jogadorVencedor == 1 ? 'X' : 'O';
+                jogadaValida = true;
+            }
+
         }
 
         private static int VerificarVencedor(char[] posicaoTabuleiro) {
@@ -99,40 +147,37 @@ namespace JogoDaVelha {
         }
 
         private static bool VerificarVitoria(char[] posicaoTabuleiro, char jogador) {
-            return (posicaoTabuleiro[0] == jogador && posicaoTabuleiro[1] == jogador && posicaoTabuleiro[2] == jogador) ||
-                   (posicaoTabuleiro[3] == jogador && posicaoTabuleiro[4] == jogador && posicaoTabuleiro[5] == jogador) ||
-                   (posicaoTabuleiro[6] == jogador && posicaoTabuleiro[7] == jogador && posicaoTabuleiro[8] == jogador) ||
-                   (posicaoTabuleiro[0] == jogador && posicaoTabuleiro[3] == jogador && posicaoTabuleiro[6] == jogador) ||
-                   (posicaoTabuleiro[1] == jogador && posicaoTabuleiro[4] == jogador && posicaoTabuleiro[7] == jogador) ||
-                   (posicaoTabuleiro[2] == jogador && posicaoTabuleiro[5] == jogador && posicaoTabuleiro[8] == jogador) ||
-                   (posicaoTabuleiro[0] == jogador && posicaoTabuleiro[4] == jogador && posicaoTabuleiro[8] == jogador) ||
-                   (posicaoTabuleiro[2] == jogador && posicaoTabuleiro[4] == jogador && posicaoTabuleiro[6] == jogador);
-        }
-
-        private static void ExecutarJogada(char[] posicaoTabuleiro, int jogadorVencedor) {
-            Console.Write(@"
-        Digite uma posição de 1 a 9: ");
-            var posicao = Console.ReadLine();
-
-            if (!int.TryParse(posicao, out int posicaoInt)) {
-                Console.WriteLine(@"
-        Posição não válida!");
-                return;
+            // Verifica as linhas
+            if (posicaoTabuleiro[0] == jogador && posicaoTabuleiro[1] == jogador && posicaoTabuleiro[2] == jogador) {
+                return true;
+            }
+            if (posicaoTabuleiro[3] == jogador && posicaoTabuleiro[4] == jogador && posicaoTabuleiro[5] == jogador) {
+                return true;
+            }
+            if (posicaoTabuleiro[6] == jogador && posicaoTabuleiro[7] == jogador && posicaoTabuleiro[8] == jogador) {
+                return true;
             }
 
-            if (posicaoInt < 1 || posicaoInt > 9) {
-                Console.WriteLine(@"
-        Posição não válida!");
-                return;
+            // Verifica as colunas
+            if (posicaoTabuleiro[0] == jogador && posicaoTabuleiro[3] == jogador && posicaoTabuleiro[6] == jogador) {
+                return true;
+            }
+            if (posicaoTabuleiro[1] == jogador && posicaoTabuleiro[4] == jogador && posicaoTabuleiro[7] == jogador) {
+                return true;
+            }
+            if (posicaoTabuleiro[2] == jogador && posicaoTabuleiro[5] == jogador && posicaoTabuleiro[8] == jogador) {
+                return true;
             }
 
-            if (posicaoTabuleiro[posicaoInt - 1] != 'X' && posicaoTabuleiro[posicaoInt - 1] != 'O') {
-                posicaoTabuleiro[posicaoInt - 1] = jogadorVencedor == 1 ? 'X' : 'O';
+            // Verifica as diagonais
+            if (posicaoTabuleiro[0] == jogador && posicaoTabuleiro[4] == jogador && posicaoTabuleiro[8] == jogador) {
+                return true;
             }
-            else {
-                Console.WriteLine(@"
-        Posição ocupada!");
-            }
+            if (posicaoTabuleiro[2] == jogador && posicaoTabuleiro[4] == jogador && posicaoTabuleiro[6] == jogador) {
+                    return true;
+                }
+
+            return false;
         }
 
         private static void ExibirTabuleiro(char[] posicaoTabuleiro) {
@@ -154,20 +199,14 @@ namespace JogoDaVelha {
         private static void ExibirInitial(int jogadorVencedor) {
             Console.WriteLine();
             Console.WriteLine(@"
-        JOGO DA VELHA - SHARP CODERS");
-            Console.WriteLine();
-            Console.WriteLine($@"
-        Jogador (a) disponível: {(jogadorVencedor == 1 ? "X" : "O")}");
-            Console.WriteLine();
-        }
+        JOGO DA VELHA - SHARP CODERS
 
-        private static int ProximoJogador(int jogadorVencedor) {
-            if (jogadorVencedor == 1) {
-                return 2;
-            }
-            else {
-                return 1;
-            }
+        Jogador (a): X
+        Jogador (a): O ");
+            Console.WriteLine($@"
+        Escolha um número de 1 a 9, depois de selecionar aperte enter no teclado.
+
+        Vez do jogador (a): {(jogadorVencedor == 1 ? "X" : "O")} <==");
         }
     }
 }
