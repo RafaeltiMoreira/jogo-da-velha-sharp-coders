@@ -1,58 +1,74 @@
 ﻿using System;
+using System.Linq;
 
 namespace JogoDaVelha {
     class Program {
+        private const int vencedorX = 1;
+        private const int vencedorO = 2;
+        private const int empate = 3;
+
         static void Main(string[] args) {
+            Console.ForegroundColor = ConsoleColor.Green;
 
             int placar = 0;
-            int vencedorX;
-            int vencedorO;
             bool continuar;
-            int jogadorAtual = -1;
+            int jogadorVencedor = -1;
+            int jogadorX = 0;
+            int jogadorO = 0;
+            int jogadorE = 0;
 
             continuar = true;
             while (continuar) {
- 
-                char[] posicaoTabuleiro =
-                { '1','2','3','4','5','6','7','8','9' };
+                char[] posicaoTabuleiro = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
                 do {
                     Console.Clear();
-                    jogadorAtual = ProximoJogador(jogadorAtual);
+                    jogadorVencedor = ProximoJogador(jogadorVencedor);
 
-                    ExibirInitial(jogadorAtual);
-                    MostrarTabuleiro(posicaoTabuleiro);
+                    ExibirInitial(jogadorVencedor);
+                    ExibirTabuleiro(posicaoTabuleiro);
 
-                    startJogo(posicaoTabuleiro, jogadorAtual);
-                    placar = PlacarVencedor(posicaoTabuleiro);
+                    ExecutarJogada(posicaoTabuleiro, jogadorVencedor);
+                    placar = VerificarVencedor(posicaoTabuleiro);
 
-                } while (placar.Equals(0));
-
+                } while (placar == 0);
 
                 Console.Clear();
-                ExibirInitial(jogadorAtual);
-                MostrarTabuleiro(posicaoTabuleiro);
+                ExibirInitial(jogadorVencedor);
+                ExibirTabuleiro(posicaoTabuleiro);
 
-
-                if (placar.Equals(1)) {
-                    string opJogador;
-                    opJogador = jogadorAtual == 1 ? "X" : "O";
+                Console.ForegroundColor = ConsoleColor.White;
+                string exibirAtual = placar == vencedorX ? "X" : "O";
+                if (placar == vencedorX) {
+                    jogadorX++;
                     Console.WriteLine($@"
-        Jogador (a) {opJogador} é o vencedor (a)!");
+        Jogador (a) {exibirAtual} é o vencedor (a)!");
                 }
-
-                if (placar.Equals(2)) {
-
+                else if (placar == vencedorO) {
+                    jogadorO++;
+                    Console.WriteLine($@"
+        Jogador (a) {exibirAtual} é o vencedor (a)!"); 
+                }
+                else {
+                    jogadorE++;
                     Console.WriteLine(@"
-        O jogo terminou empatado.");
+        O jogo terminou empatado."); 
                 }
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine();
-                Console.Write(@"
+                Console.Write($@"
+        === Placar ===
+                
+        Jogador(a) X: {jogadorX}
+        Jogador(a) O: {jogadorO}
+        Empate: {jogadorE}
+        
         Deseja continuar jogando? (S/N): ");
                 var repeteGame = Console.ReadLine();
                 if (repeteGame == "N" || repeteGame == "n") {
                     continuar = false;
                     Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine(@"
         ===> Pressione qualquer tecla para fechar. <===");
                 }
@@ -63,131 +79,65 @@ namespace JogoDaVelha {
             }
         }
 
-        private static int PlacarVencedor(char[] posicaoTabuleiro) {
-
-            if (JogoVencedor(posicaoTabuleiro)) {
-                return 1;
+        private static int VerificarVencedor(char[] posicaoTabuleiro) {
+            if (VerificarVitoria(posicaoTabuleiro, 'X')) {
+                return vencedorX;
             }
-            if (JogoEmpate(posicaoTabuleiro)) {
-                return 2;
+            if (VerificarVitoria(posicaoTabuleiro, 'O')) {
+                return vencedorO;
+            }
+            if (VerificarEmpate(posicaoTabuleiro)) {
+                return empate;
             }
             else {
                 return 0;
             }
         }
 
-        private static bool JogoEmpate(char[] posicaoTabuleiro) {
-            return
-                posicaoTabuleiro[0] != '1' &&
-                posicaoTabuleiro[1] != '2' &&
-                posicaoTabuleiro[2] != '3' &&
-                posicaoTabuleiro[3] != '4' &&
-                posicaoTabuleiro[4] != '5' &&
-                posicaoTabuleiro[5] != '6' &&
-                posicaoTabuleiro[6] != '7' &&
-                posicaoTabuleiro[7] != '8' &&
-                posicaoTabuleiro[8] != '9';
+        private static bool VerificarEmpate(char[] posicaoTabuleiro) {
+            return !VerificarVitoria(posicaoTabuleiro, 'X') && !VerificarVitoria(posicaoTabuleiro, 'O') && !posicaoTabuleiro.Any(p => p != 'X' && p != 'O');
         }
 
-        private static bool JogoVencedor(char[] posicaoTabuleiro) {
-            if (VerificaPosicao(posicaoTabuleiro, 0, 1, 2)) {
-                return true;
+        private static bool VerificarVitoria(char[] posicaoTabuleiro, char jogador) {
+            return (posicaoTabuleiro[0] == jogador && posicaoTabuleiro[1] == jogador && posicaoTabuleiro[2] == jogador) ||
+                   (posicaoTabuleiro[3] == jogador && posicaoTabuleiro[4] == jogador && posicaoTabuleiro[5] == jogador) ||
+                   (posicaoTabuleiro[6] == jogador && posicaoTabuleiro[7] == jogador && posicaoTabuleiro[8] == jogador) ||
+                   (posicaoTabuleiro[0] == jogador && posicaoTabuleiro[3] == jogador && posicaoTabuleiro[6] == jogador) ||
+                   (posicaoTabuleiro[1] == jogador && posicaoTabuleiro[4] == jogador && posicaoTabuleiro[7] == jogador) ||
+                   (posicaoTabuleiro[2] == jogador && posicaoTabuleiro[5] == jogador && posicaoTabuleiro[8] == jogador) ||
+                   (posicaoTabuleiro[0] == jogador && posicaoTabuleiro[4] == jogador && posicaoTabuleiro[8] == jogador) ||
+                   (posicaoTabuleiro[2] == jogador && posicaoTabuleiro[4] == jogador && posicaoTabuleiro[6] == jogador);
+        }
+
+        private static void ExecutarJogada(char[] posicaoTabuleiro, int jogadorVencedor) {
+            Console.Write(@"
+        Digite uma posição de 1 a 9: ");
+            var posicao = Console.ReadLine();
+
+            if (!int.TryParse(posicao, out int posicaoInt)) {
+                Console.WriteLine(@"
+        Posição não válida!");
+                return;
             }
-            if (VerificaPosicao(posicaoTabuleiro, 3, 4, 5)) {
-                return true;
+
+            if (posicaoInt < 1 || posicaoInt > 9) {
+                Console.WriteLine(@"
+        Posição não válida!");
+                return;
             }
-            if (VerificaPosicao(posicaoTabuleiro, 6, 7, 8)) {
-                return true;
-            }
-            if (VerificaPosicao(posicaoTabuleiro, 0, 3, 6)) {
-                return true;
-            }
-            if (VerificaPosicao(posicaoTabuleiro, 1, 4, 7)) {
-                return true;
-            }
-            if (VerificaPosicao(posicaoTabuleiro, 2, 5, 8)) {
-                return true;
-            }
-            if (VerificaPosicao(posicaoTabuleiro, 0, 4, 8)) {
-                return true;
-            }
-            if (VerificaPosicao(posicaoTabuleiro, 2, 4, 6)) {
-                return true;
+
+            if (posicaoTabuleiro[posicaoInt - 1] != 'X' && posicaoTabuleiro[posicaoInt - 1] != 'O') {
+                posicaoTabuleiro[posicaoInt - 1] = jogadorVencedor == 1 ? 'X' : 'O';
             }
             else {
-                return false;
+                Console.WriteLine(@"
+        Posição ocupada!");
             }
         }
 
-        private static bool VerificaPosicao(char[] verificaJogo, int posicao1, int posicao2, int posicao3) {
-            return verificaJogo[posicao1].Equals(verificaJogo[posicao2]) && verificaJogo[posicao2].Equals(verificaJogo[posicao3]);
-        }
-
-        private static void startJogo(char[] posicaoTabuleiro, int jogadorAtual) {
-            bool mover = true;
-
-            do {
-                Console.Write(@"
-        Selecione de 1 a 9 no tabuleiro de jogo: ");
-                string opcaoUsuario = Console.ReadLine();
-
-                if (!string.IsNullOrEmpty(opcaoUsuario) &&
-                    (opcaoUsuario.Equals("1") ||
-                    opcaoUsuario.Equals("2") ||
-                    opcaoUsuario.Equals("3") ||
-                    opcaoUsuario.Equals("4") ||
-                    opcaoUsuario.Equals("5") ||
-                    opcaoUsuario.Equals("6") ||
-                    opcaoUsuario.Equals("7") ||
-                    opcaoUsuario.Equals("8") ||
-                    opcaoUsuario.Equals("9"))) {
-
-                    int.TryParse(opcaoUsuario, out var moverJogadorTabuleiro);
-
-                    char jogadorPos = posicaoTabuleiro[moverJogadorTabuleiro - 1];
-
-                    if (jogadorPos.Equals('X') || jogadorPos.Equals('O')) {
-                        Console.WriteLine(@"
-        Posição selecionada, selecione outra Posição.");
-                    }
-                    else {
-                        posicaoTabuleiro[moverJogadorTabuleiro - 1] = SelecionarJogador(jogadorAtual);
-                        mover = false;
-                    }
-                }
-                else {
-                    Console.WriteLine(@"
-        Opção não válida, favor selecionar outra opção!");
-                }
-            } while (mover);
-        }
-
-        private static char SelecionarJogador(int jogador) {
-            if (jogador % 2 == 0) {
-                return 'O';
-                
-            }
-            else {
-                return 'X';
-            }
-        }
-
-        static void ExibirInitial(int NumeroJogador) {
-            string opJogador;
-            opJogador = NumeroJogador == 1 ? "X" : "O";
+        private static void ExibirTabuleiro(char[] posicaoTabuleiro) {
+            Console.WriteLine();
             Console.WriteLine($@"
-        Sejam bem-vindos (as) ao Jogo da Velha!
-            
-        Jogador (a): X
-        Jogador (a): O
-
-        Tabuleiro disponível para jogador (a): {opJogador}.
-            
-            ");
-        }
-
-        static void MostrarTabuleiro(char[] posicaoTabuleiro) {
-                       Console.WriteLine($@"
               |     |     
            {posicaoTabuleiro[0]}  |  {posicaoTabuleiro[1]}  |  {posicaoTabuleiro[2]}  
          _____|_____|_____
@@ -197,22 +147,27 @@ namespace JogoDaVelha {
               |     |     
            {posicaoTabuleiro[6]}  |  {posicaoTabuleiro[7]}  |  {posicaoTabuleiro[8]}  
               |     |     
-
             ");
+            Console.WriteLine();
         }
 
-        static int ProximoJogador(int jogador) {
-            int vencedorO, vencedorX;
-            if (jogador.Equals(1)) {
+        private static void ExibirInitial(int jogadorVencedor) {
+            Console.WriteLine();
+            Console.WriteLine(@"
+        JOGO DA VELHA - SHARP CODERS");
+            Console.WriteLine();
+            Console.WriteLine($@"
+        Jogador (a) disponível: {(jogadorVencedor == 1 ? "X" : "O")}");
+            Console.WriteLine();
+        }
+
+        private static int ProximoJogador(int jogadorVencedor) {
+            if (jogadorVencedor == 1) {
                 return 2;
-                vencedorO++;
             }
             else {
                 return 1;
-                vencedorX++;
             }
         }
     }
 }
-
-
