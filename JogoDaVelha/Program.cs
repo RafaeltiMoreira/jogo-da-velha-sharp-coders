@@ -40,18 +40,29 @@ namespace JogoDaVelha {
                 string exibirAtual = placar == vencedorX ? "X" : "O";
                 if (placar == vencedorX) {
                     jogadorX++;
-                    Console.WriteLine($@"
-        >> {exibirAtual} (Xis) << VENCEDOR (A)!");
+                    Console.Write(@"
+        Jogador (a) ");
+                    Console.ResetColor();
+                    Console.Write($@"{exibirAtual} (Xis) ");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write(@"VENCEDOR (A) da partida!");
                 }
                 else if (placar == vencedorO) {
                     jogadorO++;
-                    Console.WriteLine($@"
-        >> {exibirAtual} (Bola) << VENCEDOR (A)!");
+                    Console.Write(@"
+        Jogador (a) ");
+                    Console.ResetColor();
+                    Console.Write($@"{exibirAtual} (Bola) ");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write(@"VENCEDOR (A) da partida!");
                 }
                 else {
                     jogadorE++;
-                    Console.WriteLine(@"
-        O jogo terminou EMPATADO.");
+                    Console.Write(@"
+        O jogo terminou ");
+                    Console.ResetColor();
+                    Console.Write(@"EMPATADO."); 
+                    Console.ForegroundColor = ConsoleColor.Green;
                 }
                 
                 Console.WriteLine();
@@ -219,9 +230,11 @@ namespace JogoDaVelha {
         Escolha um número de 1 a 9, depois aperte enter no teclado.
         ");
             Console.Write(@"
-        Vez do jogador (a): ");
+        Jogador (a) ");
             Console.ResetColor();
-            Console.Write($@"{(jogadorVencedor == 1 ? "X" : "O")} <<<");
+            Console.Write($@"{(jogadorVencedor == 1 ? "X" : "O")}");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(@" é a sua vez de jogar.");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine();
         }
