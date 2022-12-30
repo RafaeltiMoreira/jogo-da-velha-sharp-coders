@@ -37,44 +37,54 @@ namespace JogoDaVelha {
                 ExibirInitial(jogadorVencedor);
                 ExibirTabuleiro(posicaoTabuleiro);
 
-                Console.ForegroundColor = ConsoleColor.White;
                 string exibirAtual = placar == vencedorX ? "X" : "O";
                 if (placar == vencedorX) {
                     jogadorX++;
                     Console.WriteLine($@"
-        Jogador (a) ==> {exibirAtual} (Xis) <== é o vencedor (a)!");
+        >> {exibirAtual} (Xis) << VENCEDOR (A)!");
                 }
                 else if (placar == vencedorO) {
                     jogadorO++;
                     Console.WriteLine($@"
-        Jogador (a) ==> {exibirAtual} (Bola) <== é o vencedor (a)!");
+        >> {exibirAtual} (Bola) << VENCEDOR (A)!");
                 }
                 else {
                     jogadorE++;
                     Console.WriteLine(@"
         O jogo terminou EMPATADO.");
                 }
-                Console.ForegroundColor = ConsoleColor.Green;
+                
                 Console.WriteLine();
                 Console.Write($@"
         === Placar ===
                 ");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine($@"
-        Jogador (a) X: {jogadorX} 
-                
-        Jogador (a) O: {jogadorO} 
-                
-        Empate: {jogadorE} ");
+
+                Console.Write(@"
+        Jogador (a) X: ");
+                Console.ResetColor();
+                Console.Write($@"{jogadorX}");
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write(@"
+        Jogador (a) O: ");
+                Console.ResetColor();
+                Console.Write($@"{jogadorO}");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(@"
+        Empate: ");
+                Console.ResetColor();
+                Console.Write($@"{jogadorE}");
+                Console.WriteLine();
+                Console.ResetColor();
+                Console.Write(@"
+
         Deseja continuar jogando? (S/N): ");
 
                 var repeteGame = Console.ReadLine();
+                Console.ForegroundColor = ConsoleColor.Green;
                 if (repeteGame == "N" || repeteGame == "n") {
                     continuar = false;
                     Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.White;
+                    
                     Console.WriteLine(@"
         ===> Pressione qualquer tecla para fechar. <===");
                 }
@@ -100,7 +110,7 @@ namespace JogoDaVelha {
             bool jogadaValida = false;
             while (!jogadaValida) {
                 Console.Write(@"
-        Digite uma posição de 1 a 9 do tabuleiro para jogar: ");
+        Digite uma posição de 1 a 9 para jogar: ");
                 var posicao = Console.ReadLine();
 
                 if (!int.TryParse(posicao, out int posicaoInt)) {
@@ -116,8 +126,8 @@ namespace JogoDaVelha {
                 }
 
                 if (posicaoTabuleiro[posicaoInt - 1] == 'X' || posicaoTabuleiro[posicaoInt - 1] == 'O') {
-                    Console.WriteLine(@"
-        Essa posição já está ocupada, Por favor, escolha um número disponível de 1 a 9.");
+                    Console.WriteLine($@"
+        Posição {posicao} ocupada, por favor escolha um número disponível de 1 a 9.");
                     continue;
                 }
 
@@ -199,14 +209,21 @@ namespace JogoDaVelha {
         private static void ExibirInitial(int jogadorVencedor) {
             Console.WriteLine();
             Console.WriteLine(@"
-        JOGO DA VELHA - SHARP CODERS
+        ╔══════════════════════════════╗
+        ║ JOGO DA VELHA - SHARP CODERS ║
+        ╚══════════════════════════════╝
 
         Jogador (a): X
         Jogador (a): O ");
-            Console.WriteLine($@"
-        Escolha um número de 1 a 9, depois de selecionar aperte enter no teclado.
-
-        Vez do jogador (a): {(jogadorVencedor == 1 ? "X" : "O")} <==");
+            Console.WriteLine(@"
+        Escolha um número de 1 a 9, depois aperte enter no teclado.
+        ");
+            Console.Write(@"
+        Vez do jogador (a): ");
+            Console.ResetColor();
+            Console.Write($@"{(jogadorVencedor == 1 ? "X" : "O")} <<<");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine();
         }
     }
 }
