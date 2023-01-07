@@ -19,7 +19,7 @@ Formação Desenvolvedor C#, promovido pela Imã Learning Place | Sharp Coders.
 <br>
 
 <p align="center">
-  <img alt="calendario da copa" src=".github/preview.png" width="100%">
+  <img alt="Projeto jogo da velha" src=".github/preview.png" width="100%">
 </p>
 
 ## 🚀 Tecnologias
