@@ -85,23 +85,29 @@ namespace JogoDaVelha {
                 Console.ResetColor();
                 Console.Write($@"{jogadorE}");
                 Console.WriteLine();
-                Console.ResetColor();
-                Console.Write(@"
 
+                while (continuar) {
+                    Console.ResetColor();
+                    Console.Write(@"
         Deseja continuar jogando? (S/N): ");
-
-                var repeteGame = Console.ReadLine();
-                Console.ForegroundColor = ConsoleColor.Green;
-                if (repeteGame == "N" || repeteGame == "n") {
-                    continuar = false;
-                    Console.Clear();
-                    
-                    Console.WriteLine(@"
+                    var repeteGame = Console.ReadLine();
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    if (repeteGame == "N" || repeteGame == "n") {
+                        continuar = false;
+                        Console.Clear();
+                        Console.WriteLine(@"
         ===> Pressione qualquer tecla para fechar. <===");
-                }
-                else {
-                    continuar = true;
-                    Console.Clear();
+                        break;
+                    }
+                    else if (repeteGame == "S" || repeteGame == "s") {
+                        continuar = true;
+                        Console.Clear();
+                        break;
+                    }
+                    else {
+                        Console.WriteLine(@"
+        Por favor, digite S para continuar jogando ou N para não.");
+                    }
                 }
             }
         }
